@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Add Payment - {{ resident.name }}</title>
+    <style>
+        body{font-family:Arial,Helvetica,sans-serif;background:linear-gradient(135deg,#4c63d2 0%,#3f51b5 100%);margin:0}
+        .card{max-width:520px;margin:40px auto;background:#fff;padding:22px;border-radius:8px;box-shadow:0 8px 30px rgba(10,20,50,0.06)}
+        h2{margin:0 0 14px;font-size:20px}
+        label{display:block;margin-bottom:6px;color:#444}
+        input,select{width:100%;padding:10px;border:1px solid #e3e7ee;border-radius:6px;margin-bottom:12px}
+        .row{display:flex;gap:12px}
+        .row > *{flex:1}
+        .btn{background:#2d8cf0;color:#fff;padding:10px 14px;border-radius:6px;border:none;cursor:pointer}
+        .muted{color:#777}
+        .actions{display:flex;justify-content:space-between;align-items:center}
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h2>Add Payment for <span class="muted">{{ resident.name }}</span></h2>
+        <form method="post">
+            {% csrf_token %}
+            <label for="id_amount">Amount</label>
+            {{ form.amount }}
+
+            <div class="row">
+                <div>
+                    <label for="id_month">Month</label>
+                    {{ form.month }}
+                </div>
+                <div>
+                    <label for="id_payment_date">Payment date</label>
+                    {{ form.payment_date }}
+                </div>
+            </div>
+
+            <div class="actions">
+                <button class="btn" type="submit">Save Payment</button>
+                <a class="muted" href="{% url 'resident_payments' resident.id %}">Cancel</a>
+            </div>
+        </form>
+    </div>
+</body>
+</html>

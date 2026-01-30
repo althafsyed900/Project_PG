@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Room QR Code - {{ room.room_number }}</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background-attachment: fixed;
+            color: #333;
+            min-height: 100vh;
+        }
+
+        .navbar {
+            background: rgba(0, 0, 0, 0.85);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .navbar h1 {
+            color: #fff;
+            font-size: 1.6rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .navbar a {
+            color: #fff;
+            text-decoration: none;
+            transition: color 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .navbar a:hover {
+            color: #667eea;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 2rem auto;
+            padding: 0 20px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 40px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            text-align: center;
+        }
+
+        .card h2 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+            font-size: 1.8rem;
+        }
+
+        .card p {
+            color: #7f8c8d;
+            margin-bottom: 30px;
+        }
+
+        .success-message {
+            background: #d4edda;
+            color: #155724;
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin-bottom: 25px;
+            border-left: 4px solid #28a745;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .room-info {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 30px;
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+        }
+
+        .info-box {
+            text-align: left;
+        }
+
+        .info-label {
+            font-weight: 700;
+            color: #667eea;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+        }
+
+        .info-value {
+            color: #2c3e50;
+            font-size: 1.3rem;
+            margin-top: 5px;
+        }
+
+        .qr-section {
+            margin: 30px 0;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+
+        .qr-title {
+            color: #667eea;
+            font-size: 0.95rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+        }
+
+        .qr-code-container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            display: inline-block;
+            margin: 0 auto 20px;
+            border: 2px solid #ecf0f1;
+        }
+
+        .qr-code-container img {
+            display: block;
+            width: 300px;
+            height: 300px;
+        }
+
+        .url-display {
+            background: white;
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 15px;
+            word-break: break-all;
+            font-size: 0.85rem;
+            color: #555;
+            border: 1px solid #ddd;
+        }
+
+        .info-box-info {
+            background: #e7f3ff;
+            border: 1px solid #b3d9ff;
+            color: #004085;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+        }
+
+        .info-box-info i {
+            flex-shrink: 0;
+            color: #004085;
+            margin-top: 2px;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 30px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            flex: 1;
+            min-width: 140px;
+            justify-content: center;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: #95a5a6;
+            color: white;
+            flex: 1;
+            min-width: 140px;
+            justify-content: center;
+        }
+
+        .btn-secondary:hover {
+            background: #7f8c8d;
+            transform: translateY(-2px);
+        }
+
+        @media (max-width: 600px) {
+            .card {
+                padding: 20px;
+            }
+
+            .room-info {
+                grid-template-columns: 1fr;
+            }
+
+            .qr-code-container img {
+                width: 250px;
+                height: 250px;
+            }
+
+            .button-group {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <h1><i class="fas fa-qrcode"></i> Room QR Code</h1>
+        <a href="{% url 'room_detail' room.id %}"><i class="fas fa-arrow-left"></i> Back</a>
+    </nav>
+
+    <div class="container">
+        <div class="card">
+            <h2><i class="fas fa-door-open"></i> Room {{ room.room_number }} QR Code</h2>
+            <p>{{ room.pg.name }}</p>
+
+            <div class="success-message">
+                <i class="fas fa-check-circle"></i>
+                <span>Room created successfully! Share this QR code.</span>
+            </div>
+
+            <div class="room-info">
+                <div class="info-box">
+                    <div class="info-label">Room Number</div>
+                    <div class="info-value">{{ room.room_number }}</div>
+                </div>
+                <div class="info-box">
+                    <div class="info-label">Capacity</div>
+                    <div class="info-value">{{ room.capacity }} Sharing</div>
+                </div>
+            </div>
+
+            <div class="info-box-info">
+                <i class="fas fa-lightbulb"></i>
+                <div>
+                    <strong>How it works:</strong> Anyone can scan this QR code with their mobile phone to access the form and fill in the room details directly.
+                </div>
+            </div>
+
+            <div class="qr-section">
+                <div class="qr-title"><i class="fas fa-camera"></i> Scan QR Code to Add Room</div>
+                <div class="qr-code-container">
+                    <img src="data:image/png;base64,{{ qr_image }}" alt="Room QR Code">
+                </div>
+                <div class="url-display">
+                    <strong>Form URL:</strong><br>{{ form_url }}
+                </div>
+            </div>
+
+            <div class="button-group">
+                <button class="btn btn-primary" onclick="printQR()">
+                    <i class="fas fa-print"></i> Print QR
+                </button>
+                <button class="btn btn-primary" onclick="copyURL()">
+                    <i class="fas fa-copy"></i> Copy URL
+                </button>
+                <a href="{% url 'room_detail' room.id %}" class="btn btn-secondary">
+                    <i class="fas fa-arrow-left"></i> Back
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function printQR() {
+            const printWindow = window.open('', '', 'height=600,width=800');
+            printWindow.document.write(`
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <title>Print QR Code - Room {{ room.room_number }}</title>
+                    <style>
+                        body { font-family: Arial, sans-serif; text-align: center; padding: 40px; }
+                        h1 { color: #2c3e50; }
+                        .qr-container { margin: 30px 0; }
+                        .qr-container img { width: 400px; height: 400px; }
+                        p { color: #666; margin: 10px 0; }
+                    </style>
+                </head>
+                <body>
+                    <h1>Room {{ room.room_number }} - {{ room.pg.name }}</h1>
+                    <p>Capacity: {{ room.capacity }} Sharing</p>
+                    <p>Scan to fill room details:</p>
+                    <div class="qr-container">
+                        <img src="data:image/png;base64,{{ qr_image }}" alt="QR Code">
+                    </div>
+                    <p><strong>{{ form_url }}</strong></p>
+                </body>
+                </html>
+            `);
+            printWindow.document.close();
+            printWindow.print();
+        }
+
+        function copyURL() {
+            const url = '{{ form_url }}';
+            navigator.clipboard.writeText(url).then(() => {
+                alert('URL copied to clipboard!');
+            }).catch(() => {
+                alert('Failed to copy URL');
+            });
+        }
+    </script>
+</body>
+</html>

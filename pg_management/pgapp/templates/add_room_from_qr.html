@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Room from QR</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #9b59b6 0%, #8e44ad 100%);
+            background-attachment: fixed;
+            color: #333;
+            min-height: 100vh;
+            padding: 2rem 1rem;
+        }
+
+        .navbar {
+            background: rgba(0, 0, 0, 0.85);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 100;
+        }
+
+        .navbar h1 {
+            color: #fff;
+            font-size: 1.4rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .navbar a {
+            color: #fff;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .navbar a:hover {
+            color: #9b59b6;
+        }
+
+        .container {
+            max-width: 700px;
+            margin: 80px auto 20px;
+            padding: 20px;
+        }
+
+        .form-card {
+            background: white;
+            color: #333;
+            border-radius: 15px;
+            padding: 40px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            animation: slideUp 0.5s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .form-header {
+            text-align: center;
+            margin-bottom: 30px;
+            border-bottom: 3px solid #9b59b6;
+            padding-bottom: 20px;
+        }
+
+        .form-header h2 {
+            color: #2c3e50;
+            font-size: 1.8rem;
+            margin-bottom: 5px;
+        }
+
+        .info-banner {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .form-group {
+            margin-bottom: 22px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #2c3e50;
+            font-size: 0.95rem;
+        }
+
+        input[type="text"],
+        input[type="number"],
+        select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #ecf0f1;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-family: inherit;
+            transition: all 0.3s;
+            background: #f8f9fa;
+        }
+
+        input[type="text"]:focus,
+        input[type="number"]:focus,
+        select:focus {
+            border-color: #9b59b6;
+            background: white;
+            outline: none;
+            box-shadow: 0 0 8px rgba(155, 89, 182, 0.3);
+        }
+
+        input:disabled {
+            background: #ecf0f1;
+            color: #95a5a6;
+            cursor: not-allowed;
+        }
+
+        .scanned-data {
+            background: #ecf0f1;
+            padding: 10px;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            color: #555;
+        }
+
+        .btn-container {
+            display: flex;
+            gap: 12px;
+            margin-top: 30px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            min-width: 140px;
+            justify-content: center;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #9b59b6 0%, #8e44ad 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(155, 89, 182, 0.4);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(155, 89, 182, 0.6);
+        }
+
+        .btn-secondary {
+            background: #95a5a6;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #7f8c8d;
+            transform: translateY(-2px);
+        }
+
+        @media (max-width: 600px) {
+            .navbar {
+                padding: 1rem;
+            }
+
+            .container {
+                margin: 70px auto 20px;
+                padding: 10px;
+            }
+
+            .form-card {
+                padding: 25px;
+            }
+
+            .btn {
+                flex: 1;
+                min-width: unset;
+            }
+
+            .btn-container {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <h1><i class="fas fa-door-open"></i> Add Room from QR</h1>
+        <a href="/" style="text-decoration: none; color: white;"><i class="fas fa-home"></i> Home</a>
+    </nav>
+
+    <div class="container">
+        <div class="form-card">
+            <div class="form-header">
+                <h2><i class="fas fa-plus-circle"></i> Add Room</h2>
+                <p>From QR Code Scan</p>
+            </div>
+
+            <div class="info-banner">
+                <i class="fas fa-check-circle"></i>
+                <span><strong>QR code scanned successfully!</strong> The form below is pre-filled with the data.</span>
+            </div>
+
+            <form method="POST" action="{% url 'add_room' pg_id %}">
+                {% csrf_token %}
+
+                <div class="form-group">
+                    <label for="room_number">Room Number <span style="color: #e74c3c;">*</span></label>
+                    <input type="text" id="room_number" name="room_number" value="{{ room_number }}" disabled style="background: #ecf0f1; color: #555;">
+                    <div class="scanned-data"><i class="fas fa-qrcode"></i> From QR Code</div>
+                </div>
+
+                <div class="form-group">
+                    <label for="capacity">Capacity <span style="color: #e74c3c;">*</span></label>
+                    <select id="capacity" name="capacity" required>
+                        <option value="">Select Capacity</option>
+                        <option value="3" {% if capacity == 3 or capacity == '3' %}selected{% endif %}>3 Sharing</option>
+                        <option value="5" {% if capacity == 5 or capacity == '5' %}selected{% endif %}>5 Sharing</option>
+                    </select>
+                </div>
+
+                <div class="btn-container">
+                    <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Add Room</button>
+                    <a href="/" class="btn btn-secondary"><i class="fas fa-times"></i> Cancel</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+</html>
