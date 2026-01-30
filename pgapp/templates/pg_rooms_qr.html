@@ -1,0 +1,293 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ pg.name }} - Room QR Codes{% endblock %}
+
+{% block content %}
+<style>
+    .qr-grid-container {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        padding: 40px 20px;
+    }
+
+    .qr-grid-header {
+        max-width: 1200px;
+        margin: 0 auto 40px;
+        text-align: center;
+        color: white;
+    }
+
+    .qr-grid-header h1 {
+        font-size: 2.5em;
+        margin-bottom: 10px;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+    }
+
+    .qr-grid-header p {
+        font-size: 1.1em;
+        opacity: 0.9;
+    }
+
+    .qr-grid-wrapper {
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    .qr-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+        gap: 30px;
+        margin-bottom: 40px;
+    }
+
+    .qr-card {
+        background: white;
+        border-radius: 15px;
+        padding: 25px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+        transition: all 0.3s ease;
+        text-align: center;
+    }
+
+    .qr-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.25);
+    }
+
+    .qr-card-title {
+        font-size: 1.3em;
+        color: #333;
+        margin-bottom: 15px;
+        font-weight: 600;
+    }
+
+    .qr-info {
+        font-size: 0.95em;
+        color: #666;
+        margin-bottom: 15px;
+        line-height: 1.6;
+    }
+
+    .qr-info-item {
+        display: flex;
+        justify-content: space-between;
+        padding: 8px 0;
+        border-bottom: 1px solid #eee;
+    }
+
+    .qr-info-item:last-child {
+        border-bottom: none;
+    }
+
+    .qr-info-label {
+        font-weight: 600;
+        color: #555;
+        text-align: left;
+    }
+
+    .qr-info-value {
+        color: #764ba2;
+        font-weight: 500;
+    }
+
+    .qr-image-container {
+        margin: 20px 0;
+        padding: 15px;
+        background: #f8f9fa;
+        border-radius: 10px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .qr-image-container img {
+        max-width: 200px;
+        height: auto;
+        border-radius: 8px;
+    }
+
+    .qr-actions {
+        display: flex;
+        gap: 10px;
+        margin-top: 15px;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .qr-btn {
+        padding: 8px 15px;
+        border: none;
+        border-radius: 6px;
+        font-size: 0.9em;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        text-decoration: none;
+        display: inline-block;
+        font-weight: 500;
+    }
+
+    .qr-btn-primary {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+    }
+
+    .qr-btn-primary:hover {
+        transform: scale(1.05);
+        box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+    }
+
+    .qr-btn-secondary {
+        background: #f0f0f0;
+        color: #333;
+        border: 1px solid #ddd;
+    }
+
+    .qr-btn-secondary:hover {
+        background: #e8e8e8;
+    }
+
+    .qr-empty {
+        text-align: center;
+        padding: 60px 20px;
+        color: white;
+        background: rgba(0, 0, 0, 0.1);
+        border-radius: 15px;
+    }
+
+    .qr-empty h3 {
+        font-size: 1.5em;
+        margin-bottom: 10px;
+    }
+
+    .qr-actions-bar {
+        max-width: 1200px;
+        margin: 0 auto 30px;
+        display: flex;
+        gap: 15px;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+
+    .qr-action-btn {
+        padding: 12px 25px;
+        background: white;
+        color: #764ba2;
+        border: none;
+        border-radius: 8px;
+        font-size: 1em;
+        cursor: pointer;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-block;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .qr-action-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+    }
+
+    @media (max-width: 768px) {
+        .qr-grid {
+            grid-template-columns: 1fr;
+            gap: 20px;
+        }
+
+        .qr-grid-header h1 {
+            font-size: 1.8em;
+        }
+
+        .qr-card {
+            padding: 20px;
+        }
+
+        .qr-image-container img {
+            max-width: 150px;
+        }
+    }
+
+    @media print {
+        .qr-grid-header,
+        .qr-actions-bar,
+        .qr-actions {
+            display: none;
+        }
+
+        .qr-grid {
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+
+        .qr-card {
+            break-inside: avoid;
+            box-shadow: none;
+            border: 1px solid #ccc;
+        }
+    }
+</style>
+
+<div class="qr-grid-container">
+    <div class="qr-grid-header">
+        <h1>🏢 {{ pg.name }}</h1>
+        <p>Room QR Codes for Quick Access</p>
+    </div>
+
+    <div class="qr-actions-bar">
+        <a href="{% url 'pg_detail' pg.id %}" class="qr-action-btn">← Back to PG</a>
+        <button class="qr-action-btn" onclick="window.print()">🖨️ Print All QR Codes</button>
+        <a href="{% url 'home' %}" class="qr-action-btn">Home</a>
+    </div>
+
+    <div class="qr-grid-wrapper">
+        {% if rooms %}
+            <div class="qr-grid">
+                {% for item in rooms %}
+                    <div class="qr-card">
+                        <div class="qr-card-title">
+                            Room {{ item.room.room_number }}
+                        </div>
+
+                        <div class="qr-info">
+                            <div class="qr-info-item">
+                                <span class="qr-info-label">Capacity:</span>
+                                <span class="qr-info-value">{{ item.room.capacity }} beds</span>
+                            </div>
+                            <div class="qr-info-item">
+                                <span class="qr-info-label">Status:</span>
+                                <span class="qr-info-value">
+                                    {% if item.room.resident_set.count >= item.room.capacity %}
+                                        Full ({{ item.room.resident_set.count }}/{{ item.room.capacity }})
+                                    {% else %}
+                                        {{ item.room.resident_set.count }}/{{ item.room.capacity }}
+                                    {% endif %}
+                                </span>
+                            </div>
+                            <div class="qr-info-item">
+                                <span class="qr-info-label">Residents:</span>
+                                <span class="qr-info-value">{{ item.room.resident_set.count }}</span>
+                            </div>
+                        </div>
+
+                        <div class="qr-image-container">
+                            <img src="data:image/png;base64,{{ item.qr_image }}" alt="Room {{ item.room.room_number }} QR Code">
+                        </div>
+
+                        <div class="qr-actions">
+                            <a href="{% url 'room_qr_code' item.room.id %}" class="qr-btn qr-btn-primary">View QR</a>
+                            <a href="{% url 'room_detail' item.room.id %}" class="qr-btn qr-btn-secondary">Details</a>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="qr-empty">
+                <h3>No Rooms Found</h3>
+                <p>{{ pg.name }} doesn't have any rooms yet.</p>
+                <a href="{% url 'add_room' %}" class="qr-action-btn" style="margin-top: 20px;">Add First Room</a>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
