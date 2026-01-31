@@ -1,0 +1,13 @@
+services:
+  - type: web
+    name: pg-management
+    env: python
+    plan: free
+    branch: main
+    buildCommand: pip install -r requirements.txt && python manage.py collectstatic --noinput
+    startCommand: gunicorn pg_management.wsgi
+    envVars:
+      - key: DEBUG
+        value: "False"
+      - key: DISABLE_COLLECTSTATIC
+        value: "1"

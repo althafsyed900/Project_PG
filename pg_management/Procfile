@@ -1,1 +1,2 @@
-web: gunicorn pg_management.wsgi
+release: python manage.py migrate
+web: gunicorn pg_management.wsgi --bind 0.0.0.0:${PORT:-8000}
