@@ -4,10 +4,12 @@ services:
     env: python
     plan: free
     branch: main
-    buildCommand: pip install -r requirements.txt && python manage.py collectstatic --noinput
+    buildCommand: pip install -r requirements.txt
     startCommand: gunicorn pg_management.wsgi
     envVars:
       - key: DEBUG
         value: "False"
       - key: DISABLE_COLLECTSTATIC
+        value: "1"
+      - key: PYTHONUNBUFFERED
         value: "1"
